@@ -4,6 +4,7 @@ import './Space.css'; // Optional: Add styles if needed
 
 const Space = () => {
     const navigate = useNavigate();
+    // Game variables
     const tileSize = 32;
     const rows = 16;
     const columns = 16;
@@ -32,11 +33,6 @@ const Space = () => {
     let alienHeight = tileSize;
     let alienImg = new Image();
     alienImg.src = "./alien.png";
-    
-    // Image for broken alien
-    let alienBrokenImg = new Image();
-    alienBrokenImg.src = "./alienBroken.png"; // Ensure this is the correct path
-    
     const explosionSound = new Audio('./explosion.mp3');
 
     let alienRows = 2;
@@ -49,9 +45,9 @@ const Space = () => {
     let bulletVelocityY = -10;
 
     let score = 0;
-
-   // State for game over and broken alien visibility
-   const [gameOver, setGameOver] = useState(false);
+    
+    // State for game over
+    const [gameOver, setGameOver] = useState(false);
 
    useEffect(() => {
         const canvas = canvasRef.current;
@@ -71,6 +67,16 @@ const Space = () => {
         };
         
    }, []);
+
+   function getRandomVolume() {
+       return Math.random() * (1 - 0.7) + 0.7; // Random volume between 0.7 and 1.0
+   }
+
+   function getRandomPitch() {
+       const minPitch = 0.894; // Decrease pitch by one whole tone (2 semitones)
+       const maxPitch = 1.122; // Increase pitch by one whole tone (2 semitones)
+       return Math.random() * (maxPitch - minPitch) + minPitch; // Random pitch between min and max
+   }
 
    function update() {
        if (gameOver) {
@@ -98,14 +104,12 @@ const Space = () => {
                context.drawImage(alienImg, alien.x, alien.y, alien.width, alien.height);
 
                if (alien.y >= shipY) {
-                   impactSound.volume = getRandomVolume(); 
-                   impactSound.playbackRate = getRandomPitch(); 
-                   impactSound.currentTime = 0; 
-                   impactSound.play(); 
-                   setGameOver(true); 
+                   impactSound.volume = getRandomVolume(); // Set random volume
+                   impactSound.playbackRate = getRandomPitch(); // Set random pitch
+                   impactSound.currentTime = 0; // Reiniciar el sonido si ya ha terminado
+                   impactSound.play(); // Reproducir el sonido de impacto
+                   setGameOver(true); // Cambia a setGameOver
                }
-           } else if (!alien.alive && alien.showBroken) { // Check if the broken image should be shown
-               context.drawImage(alienBrokenImg, alien.x, alien.y, alien.width, alien.height);
            }
        }
 
@@ -120,13 +124,11 @@ const Space = () => {
                if (!bullet.used && alien.alive && detectCollision(bullet, alien)) {
                    bullet.used = true;
                    alien.alive = false;
-                   // Show broken image temporarily
-                   showAlienBroken(alien);
 
-                   explosionSound.volume = getRandomVolume(); 
-                   explosionSound.playbackRate = getRandomPitch(); 
-                   explosionSound.currentTime = 0; 
-                   explosionSound.play();
+                   explosionSound.volume = getRandomVolume(); // Set random volume
+                   explosionSound.playbackRate = getRandomPitch(); // Set random pitch
+                   explosionSound.currentTime = 0; // Reiniciar el sonido si ya ha terminado
+                   explosionSound.play(); // Reproducir el sonido de explosión
                    
                    alienCount--;
                    score += 100;
@@ -145,29 +147,21 @@ const Space = () => {
        }
 
        context.fillStyle = "yellow";
-       context.font = "16px 'Press Start 2P'"; 
+       context.font = "16px 'Press Start 2P'"; // Configura la fuente
        context.fillText(score.toString(), 5, 20);
 
        requestAnimationFrame(update);
    }
 
-   function showAlienBroken(alien) {
-       // Show the broken image for a short duration
-       setTimeout(() => {
-           if (alien) {
-               // Set the showBroken property to false after a delay
-               alien.showBroken = false; // Hide the broken image after a delay
-           }
-       }, 100); // Display for 1 second
-       
-       // Set the showBroken property to true immediately when the bullet hits
-       if (alien) {
-           alien.showBroken = true; 
-       }
-   }
-
    function increaseAlienDifficulty() {
-       // Increase difficulty logic...
+       alienColumns++;
+       if (alienColumns > columns / 2 - 2) { 
+           alienColumns = columns / 2 - 2; 
+       }
+       alienRows++;
+       if (alienRows > rows - 4) { 
+           alienRows = rows - 4; 
+       }
    }
 
    function moveShip(e) {
@@ -191,7 +185,6 @@ const Space = () => {
                    width: alienWidth,
                    height: alienHeight,
                    alive: true,
-                   showBroken: false // Initialize as not broken
                };
                alienArray.push(alien);
            }
@@ -203,9 +196,9 @@ const Space = () => {
         if (gameOver) return;
 
         if (e.code === "Space") {
-            shootSound.volume = getRandomVolume(); 
-            shootSound.playbackRate = getRandomPitch(); 
-            shootSound.currentTime = 0; 
+            shootSound.volume = getRandomVolume(); // Set random volume
+            shootSound.playbackRate = getRandomPitch(); // Set random pitch
+            shootSound.currentTime = 0; // Reiniciar el sonido si ya ha terminado
             shootSound.play();
 
             const bullet = {
@@ -228,30 +221,20 @@ const Space = () => {
        );
    }
 
-   function getRandomVolume() {
-       return Math.random() * (1 - 0.7) + 0.7; // Random volume between 0.7 and 1.0
-   }
-
-   function getRandomPitch() {
-       const minPitch = 0.894; // Decrease pitch by one whole tone (2 semitones)
-       const maxPitch = 1.122; // Increase pitch by one whole tone (2 semitones)
-       return Math.random() * (maxPitch - minPitch) + minPitch; // Random pitch between min and max
-   }
-
    return (
-      <div className="game-container">
-          <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
-          {gameOver && (
-              <div className="game-over">
-                  <h1>Game Over</h1>
-                  <div>
-                      <button onClick={() => window.location.reload()}>Reiniciar</button>
-                      <button onClick={() => navigate('/')}>Pantalla Principal</button>
-                  </div>
-              </div>
-          )}
-      </div>
-   );
+    <div className="game-container">
+      <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
+      {gameOver && (
+        <div className="game-over">
+          <h1>Game Over</h1>
+          <div>
+          <button onClick={() => window.location.reload()}>Reiniciar</button>
+          <button onClick={() => navigate('/')}>Pantalla Principal</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Space;
