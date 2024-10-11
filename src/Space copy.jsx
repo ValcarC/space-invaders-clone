@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Space.css'; // Optional: Add styles if needed
 
 const Space = () => {
-    const navigate = useNavigate();
     // Game variables
     const tileSize = 32;
     const rows = 16;
@@ -146,8 +144,8 @@ const Space = () => {
            createAliens();
        }
 
-       context.fillStyle = "yellow";
-       context.font = "16px 'Press Start 2P'"; // Configura la fuente
+       context.fillStyle="white";
+       context.font="16px courier";
        context.fillText(score.toString(), 5, 20);
 
        requestAnimationFrame(update);
@@ -222,19 +220,16 @@ const Space = () => {
    }
 
    return (
-    <div className="game-container">
-      <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
-      {gameOver && (
-        <div className="game-over">
-          <h1>Game Over</h1>
-          <div>
-          <button onClick={() => window.location.reload()}>Reiniciar</button>
-          <button onClick={() => navigate('/')}>Pantalla Principal</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+      <div className="game-container">
+          <canvas ref={canvasRef} width={boardWidth} height={boardHeight} />
+          {gameOver && (
+              <div className="game-over">
+                  <h1>Game Over</h1>
+                  <button onClick={() => window.location.reload()}>Reiniciar</button>
+              </div>
+          )}
+      </div>
+   );
 };
 
 export default Space;

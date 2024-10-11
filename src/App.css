@@ -34,11 +34,21 @@ body, html {
   transform: translate(-50%, -50%); /* Ajusta la posición al centro */
   color: white; /* Color del texto */
   text-align: center; /* Centra el texto */
+  justify-content: center;
   z-index: 10; /* Asegúrate que esté por encima del canvas */
 }
 
 .game-over button {
+  display: flex;
+  flex-direction: column; /* Acomoda los botones en columna */
+  gap: 10px; /* Espacio entre los botones */
+  align-items: center;
+  justify-content: center; /* Centra los botones horizontalmente */
   margin-top: 20px; /* Espacio entre el texto y el botón */
   padding: 10px 20px; /* Tamaño del botón */
   font-size: 16px; /* Tamaño del texto del botón */
+}
+
+* {
+  font-family: "Press Start 2P", system-ui;
 }
