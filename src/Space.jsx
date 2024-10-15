@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Space.css'; // Optional: Add styles if needed
+import './Space.css'; 
 
 const Space = () => {
     const navigate = useNavigate();
@@ -13,7 +13,6 @@ const Space = () => {
 
     const canvasRef = useRef(null);
     
-    // Ship properties
     let shipWidth = tileSize * 2;
     let shipHeight = tileSize;
     let shipX = (tileSize * columns) / 2 - tileSize;
@@ -40,7 +39,7 @@ const Space = () => {
     const explosionSound = new Audio('./explosion.mp3');
 
     let alienRows = 2;
-    let alienColumns = 3;
+    let alienColumns = 2;
     let alienCount = 0;
     let alienVelocityX = 1;
 
@@ -120,14 +119,14 @@ const Space = () => {
                if (!bullet.used && alien.alive && detectCollision(bullet, alien)) {
                    bullet.used = true;
                    alien.alive = false;
-                   // Show broken image temporarily
-                   showAlienBroken(alien);
 
                    explosionSound.volume = getRandomVolume(); 
                    explosionSound.playbackRate = getRandomPitch(); 
                    explosionSound.currentTime = 0; 
                    explosionSound.play();
                    
+                   showAlienBroken(alien);
+
                    alienCount--;
                    score += 100;
                }
@@ -144,31 +143,36 @@ const Space = () => {
            createAliens();
        }
 
-       context.fillStyle = "yellow";
-       context.font = "16px 'Press Start 2P'"; 
+       context.fillStyle="yellow";
+       context.font="16px 'Press Start 2P'"; 
        context.fillText(score.toString(), 5, 20);
 
        requestAnimationFrame(update);
    }
 
    function showAlienBroken(alien) {
-       // Show the broken image for a short duration
-       setTimeout(() => {
-           if (alien) {
-               // Set the showBroken property to false after a delay
-               alien.showBroken = false; // Hide the broken image after a delay
-           }
-       }, 100); // Display for 1 second
-       
-       // Set the showBroken property to true immediately when the bullet hits
-       if (alien) {
-           alien.showBroken = true; 
-       }
-   }
+    alien.showBroken = true; // Show broken image immediately
+    setTimeout(() => {
+        alien.showBroken = false; // Hide the broken image after a delay
+    }, 100); // Display for a short time
+}
 
-   function increaseAlienDifficulty() {
-       // Increase difficulty logic...
-   }
+let incrementCount = 0; // Counter to track increments
+
+function increaseAlienDifficulty() {
+    // Check if we can still increment
+    if (incrementCount < 7) {
+        // Increment the number of rows and columns
+        if (alienRows < rows - 1) { 
+            alienRows++; 
+            incrementCount++; // Increase the counter
+        }
+        if (alienColumns < columns / 2) { 
+            alienColumns++; 
+            incrementCount++; // Increase the counter
+        }
+    }
+}
 
    function moveShip(e) {
        if (gameOver) return;
@@ -181,23 +185,23 @@ const Space = () => {
    }
 
    function createAliens() {
-       alienArray.length = 0;
-       for (let c = 0; c < alienColumns; c++) {
-           for (let r = 0; r < alienRows; r++) {
-               const alien = {
-                   img: alienImg,
-                   x: c * (tileSize * 2),
-                   y: r * tileSize,
-                   width: alienWidth,
-                   height: alienHeight,
-                   alive: true,
-                   showBroken: false // Initialize as not broken
-               };
-               alienArray.push(alien);
-           }
-       }
-       alienCount = alienArray.length;
-   }
+    alienArray.length = 0; // Clear the existing aliens
+    for (let c = 0; c < alienColumns; c++) {
+        for (let r = 0; r < alienRows; r++) {
+            const alien = {
+                img: alienImg,
+                x: c * (tileSize * 2),
+                y: r * tileSize,
+                width: alienWidth,
+                height: alienHeight,
+                alive: true,
+                showBroken: false // Initialize showBroken property
+            };
+            alienArray.push(alien);
+        }
+    }
+    alienCount = alienArray.length; // Update the count of aliens
+}
 
    function shoot(e) {
         if (gameOver) return;
@@ -244,8 +248,10 @@ const Space = () => {
           {gameOver && (
               <div className="game-over">
                   <h1>Game Over</h1>
-                  <div>
+                    <div className='button'>
                       <button onClick={() => window.location.reload()}>Reiniciar</button>
+                    </div>
+                    <div className='button'>
                       <button onClick={() => navigate('/')}>Pantalla Principal</button>
                   </div>
               </div>

@@ -1,0 +1,45 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    margin: 0; /* Optional: Remove default margin */
+  }
+  
+  canvas {
+    background-color: black; /* Set canvas background color to black */
+    display: block; /* Optional: Ensures no extra space below the canvas */
+    margin: 0 auto; /* Center the canvas horizontally */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+  }
+  
+  body, html {
+    margin: 0; /* Elimina márgenes por defecto */
+    padding: 0; /* Elimina paddings por defecto */
+    display: flex; /* Usamos flexbox para centrar */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    background-color: transparent; 
+  }
+  .game-over {
+    width: 200px;
+    gap: 3rem;
+    position: absolute;               /* Posiciona el mensaje sobre el canvas */
+    top: 50%;                        /* Centra verticalmente */
+    left: 50%;                       /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta la posición al centro */
+    color: white;                    /* Color del texto */
+    text-align: center;              /* Centra el texto */
+    display: flex;                   /* Activa flexbox en el contenedor */
+    flex-direction: column;
+    justify-content: center;         /* Centra los elementos verticalmente */
+    z-index: 10;                     /* Asegúrate que esté por encima del canvas */
+}
+
+.button {
+    padding: 4px;
+}
+
+* {
+    font-family: "Press Start 2P", system-ui;
+  }

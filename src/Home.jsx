@@ -10,7 +10,7 @@ const Home = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+    <div style={{ textAlign: 'center', margin: '50px' }}>
       <h1>SPACE INVADERS</h1>
       <button onClick={handleStartGame}>Iniciar Juego</button>
     </div>
